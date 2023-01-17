@@ -31,6 +31,7 @@ com\hyg\service\magnet\GetMagnetService.class
 com\hyg\controller\StarSubscribeController.class
 com\hyg\domain\UserCollections.class
 com\hyg\dao\FanhaoDao.class
+com\hyg\service\VideoEncode\ScheduledVideoEncodeService.class
 com\hyg\domain\Allocates.class
 com\hyg\dao\SecondAllocateDao.class
 com\hyg\dao\StarClickDao.class
@@ -46,7 +47,6 @@ com\hyg\service\dao_related\AllocateService.class
 com\hyg\dao\AccountDao.class
 com\hyg\service\dao_related\quoted\StarSubscribeService.class
 com\hyg\domain\StarFanhao.class
-com\hyg\service\util_service\ScheduledVideoEncodeService.class
 com\hyg\domain\transfer\AddUserCollection.class
 com\hyg\domain\transfer\PageContentInfo.class
 com\hyg\dao\VideoClickTimesDao.class

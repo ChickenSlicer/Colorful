@@ -66,6 +66,7 @@ public class ScheduledVideoEncodeService {
     @Scheduled(fixedDelay = 60 * 1000)
     public void executeVideoEncode(){
         List<File> todoList = getAllTodoVideos();
+        boolean invalidAugment = false;
 
         if (todoList.size() == 0)
             return;
@@ -73,7 +74,7 @@ public class ScheduledVideoEncodeService {
         for (File file : todoList) {
             String fanhao = file.getName().split("\\.")[0];
             String execute = "ffmpeg -i " + file.getAbsolutePath() +
-                    " -vf scale=1280:720 " + firstVideoDir + "\\" + fanhao + " -hide_banner";
+                    " -vf scale=1280:720 " + firstVideoDir + "\\" + fanhao + ".mp4 -hide_banner";
 
             System.out.println("执行" + execute);
 
@@ -84,18 +85,22 @@ public class ScheduledVideoEncodeService {
 
                 while ((line = br.readLine()) != null){
                     System.out.println(line);
+
+                    if (line.contains("Invalid argument"))
+                        invalidAugment = true;
                 }
 
                 exec.waitFor();
             }
             catch (Exception e){
-                System.out.println("尝试调用命令行工具时出现问题");
+                System.out.println("尝试通过命令行调用ffmpeg转码时出现问题");
                 e.printStackTrace();
             }
         }
 
         for (File file : todoList) {
-            this.deleteTodoVideo(file);
+            if (!invalidAugment)
+                this.deleteTodoVideo(file);
         }
     }
 }
