@@ -49,6 +49,13 @@ public class StarSubscribeService {
      * @return false表示starName对应的star有多个，true表示插入成功
      */
     public boolean addSubscribe(String username, String starName){
+        List<StarSubscribe> subscribers = this.findByStarName(starName);
+
+        for (StarSubscribe subscriber : subscribers) {
+            if (subscriber.getUsername().equals(username))
+                return true;
+        }
+
         List<Star> stars = this.starService.findStarByName(starName);
         List<Star> added = new ArrayList<>();
 
