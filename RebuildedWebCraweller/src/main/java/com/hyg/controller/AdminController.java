@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.hyg.domain.Account;
 import com.hyg.domain.transfer.AddAllocateUnit;
 import com.hyg.domain.transfer.AddMovieAuthorUnit;
+import com.hyg.domain.transfer.AdjustSizeOrPosition;
 import com.hyg.domain.transfer.AdminUsed;
 import com.hyg.service.auth_related.AdminService;
 import com.hyg.service.util_service.UsefulService;
@@ -121,5 +122,39 @@ public class AdminController {
         AddAllocateUnit fanhaoInfo = JSON.parseObject(info, AddAllocateUnit.class);
 
         return JSON.toJSONString(videoAddressService.getVideoInfoWithFanhao(fanhaoInfo.getFanhao().trim()));
+    }
+
+    @RequestMapping("/openScheduleService")
+    public void openScheduleService(){
+        adminService.openScheduledFanhaoService();
+    }
+
+    @RequestMapping("/closeScheduleService")
+    public void closeScheduleService(){
+        adminService.closeScheduledFanhaoService();
+    }
+
+    @RequestMapping("/setScheduledServiceSize")
+    public boolean setScheduledServiceSize(@RequestBody String info){
+        AdjustSizeOrPosition adjustInfo = JSON.parseObject(info, AdjustSizeOrPosition.class);
+
+        return adminService.setScheduledServiceSize(adjustInfo.getSize());
+    }
+
+    @RequestMapping("/setScheduledServicePosition")
+    public boolean setScheduledServicePosition(@RequestBody String info){
+        AdjustSizeOrPosition adjustInfo = JSON.parseObject(info, AdjustSizeOrPosition.class);
+
+        return adminService.setScheduledServicePosition(adjustInfo.getPosition());
+    }
+
+    @RequestMapping("/getScheduledServiceSize")
+    public int getScheduledServiceSize(){
+        return adminService.getScheduledServiceSize();
+    }
+
+    @RequestMapping("/getScheduledServicePosition")
+    public int getScheduledServicePosition(){
+        return adminService.getScheduledServicePosition();
     }
 }

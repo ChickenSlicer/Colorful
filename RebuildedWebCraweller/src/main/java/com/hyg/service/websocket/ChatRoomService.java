@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author hyg
  **/
-//@Service
-@ConditionalOnClass(value = WebSocketConfig.class)
+@Service
+//@ConditionalOnClass(value = WebSocketConfig.class)
 @CrossOrigin
 @ServerEndpoint("/ws/chatRoom/{username}")
 public class ChatRoomService {

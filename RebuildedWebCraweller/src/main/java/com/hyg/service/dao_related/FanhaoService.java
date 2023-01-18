@@ -37,4 +37,12 @@ public class FanhaoService {
 
         return new Fanhao();
     }
+
+    public List<Fanhao> findFanhaoLimited(int position, int size){
+        return this.fanhaoDao.findFanhaoLimited(position, size);
+    }
+
+    public int getSize(){
+        return this.findAll().size();
+    }
 }

@@ -30,4 +30,7 @@ public interface FanhaoDao {
     //模糊查询
     @Select("select * from fanhao where fanhao like concat('%',#{fanhao},'%')")
     List<Fanhao> findByFanhao(String fanhao);
+
+    @Select("select * from fanhao limit #{position}, #{size}")
+    List<Fanhao> findFanhaoLimited(@Param("position") int position, @Param("size") int size);
 }

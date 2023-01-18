@@ -1,6 +1,7 @@
 package com.hyg.service.magnet;
 
 import com.hyg.domain.Fanhao;
+import com.hyg.domain.MagnetInfo;
 import com.hyg.service.util_service.unquoted.StartService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GetMagnetService {
@@ -22,7 +25,12 @@ public class GetMagnetService {
     @Value("${proxy-port}")
     private int proxyPort;
 
-    //使用优先网站查找磁力链接
+    /**
+     * 使用优先网站查找磁力链接
+     * 即: http://www.eclzz.mobi
+     * @param fanhao
+     * @return
+     */
     public Fanhao getMagnet(String fanhao){
         String urlPrefix = "http://www.eclzz.mobi";
         String url = urlPrefix + "/s/" + fanhao + ".html";
@@ -119,7 +127,13 @@ public class GetMagnetService {
         }
     }
 
-    //使用备用网站：雨花阁来查找磁力链接，type=1表示缺少length的，type=2表示缺少heat的
+    /**
+     * 使用备用网站：雨花阁来查找磁力链接
+     * @param nameOfFanhao
+     * @param type type=1表示缺少length的，type=2表示缺少heat的
+     * @param otherMagnet
+     * @return
+     */
     public Fanhao getMagnetsUsingBackup(String nameOfFanhao, int type, String otherMagnet){
         String urlPrefix = "https://www.yuhuage.win";
         String url = urlPrefix + "/search/" + nameOfFanhao + "-1.html";
@@ -239,5 +253,73 @@ public class GetMagnetService {
         finally {
             return magnet;
         }
+    }
+
+    /**
+     * 从无极磁力获取fanhao的磁力链接，即第二备用网站，第三种方式
+     * @param fanhao
+     * @return
+     */
+    public List<MagnetInfo> getMagnetsFromThirdWebsite(String fanhao){
+        if (!fanhao.contains("-"))
+            return new ArrayList<>();
+
+        fanhao = fanhao.toUpperCase();
+        String url = "https://wcili.com/search?q=" + fanhao;
+        String prefixUrl = "https://wcili.com";
+        Connection connection = Jsoup.connect(url).proxy(proxyAddress, proxyPort).maxBodySize(3000000);
+        List<MagnetInfo> result = new ArrayList<>();
+        String simpFanhao = fanhao.split("-")[0] + fanhao.split("-")[1];
+
+        try{
+            Document document = connection.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Apple" +
+                    "WebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36").get();
+            Elements elements = document.select("body > div.container > table.table.table-hover.file-list " +
+                    "> tbody > tr > td > a");
+
+            for (Element element : elements) {
+                String elementTitle = element.select("b").text().toUpperCase();
+
+                if (elementTitle.contains(fanhao) || elementTitle.contains(simpFanhao)){
+                    String appendingUrl = element.attr("href");
+                    String nextUrl = prefixUrl + appendingUrl;
+                    startService.sleep();
+
+                    Connection nextConnection = Jsoup.connect(nextUrl).proxy(proxyAddress, proxyPort).maxBodySize(3000000);
+                    Document nextDocument = nextConnection.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Apple" +
+                            "WebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36").get();
+                    String magnet = nextDocument.select("body > div.container > div.input-group.magnet-box > " +
+                            "input#input-magnet.form-control").attr("value");
+                    Elements nextElements = nextDocument.select("body > div.container > div.row > " +
+                            "dl.dl-horizontal.torrent-info.col-sm-9 > dd");
+                    String sizeInfo = "";
+
+                    for (Element nextElement : nextElements) {
+                        String innerText = nextElement.text();
+
+                        if (innerText.contains(" MB") || innerText.contains(" GB")){
+                            sizeInfo = innerText;
+                            break;
+                        }
+                    }
+
+                    MagnetInfo info = new MagnetInfo(fanhao, magnet);
+                    String[] sizeInfoArray = sizeInfo.split(" ");
+
+                    if (sizeInfoArray.length == 2){
+                        info.setSize(Float.parseFloat(sizeInfoArray[0]));
+                        info.setUnits(sizeInfoArray[1]);
+                    }
+
+                    result.add(info);
+                }
+            }
+        }
+        catch (IOException e){
+            System.out.println("在无极磁力获取磁力链接时出现了问题" + url);
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

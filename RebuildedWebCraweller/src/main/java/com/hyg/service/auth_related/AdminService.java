@@ -6,6 +6,7 @@ import com.hyg.service.dao_related.quoted.HistoryService;
 import com.hyg.service.dao_related.quoted.StarSubscribeService;
 import com.hyg.service.dao_related.quoted.UserCollectionsService;
 import com.hyg.service.filework.GetAllFileService;
+import com.hyg.service.util_service.ScheduledFanhaoService;
 import com.hyg.service.util_service.unquoted.StartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,8 @@ public class AdminService {
     private AccountService accountService;
     @Autowired
     private StarSubscribeService starSubscribeService;
+    @Autowired
+    private ScheduledFanhaoService scheduledFanhaoService;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -202,5 +205,49 @@ public class AdminService {
         flag = flag && starSubscribeService.deleteByUser(name);
 
         return flag && accountService.delete(name);
+    }
+
+    /**
+     * 获取自动更新fanhao磁力服务的状态
+     * @return true表示开启，false表示关闭，默认状态关闭
+     */
+    public boolean getScheduledFanhaoStatus(){
+        return scheduledFanhaoService.isEnableService();
+    }
+
+    /**
+     * 开启自动更新服务
+     */
+    public void openScheduledFanhaoService(){
+        if (this.getScheduledFanhaoStatus())
+            return;
+
+        scheduledFanhaoService.setEnableService(true);
+    }
+
+    /**
+     * 关闭自动更新服务
+     */
+    public void closeScheduledFanhaoService(){
+        if (!this.getScheduledFanhaoStatus())
+            return;
+
+        scheduledFanhaoService.setEnableService(false);
+    }
+
+    public boolean setScheduledServiceSize(int size){
+        return scheduledFanhaoService.setEachTurnSize(size);
+    }
+
+    public boolean setScheduledServicePosition(int position){
+        return scheduledFanhaoService.setPosition(position);
+    }
+
+    public int getScheduledServiceSize(){
+        return scheduledFanhaoService.getEachTurnSize();
+    }
+
+    public int getScheduledServicePosition(){
+        return scheduledFanhaoService.getPosition();
     }
 }
