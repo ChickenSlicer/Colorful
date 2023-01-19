@@ -28,6 +28,11 @@ public interface StarSubscribeDao {
     @ResultMap("starSubscribeMap")
     List<StarSubscribe> findByUsername(@Param("username") String username);
 
+    @Select("select * from star_subscribe where username=#{username} limit #{position}, #{size}")
+    @ResultMap("starSubscribeMap")
+    List<StarSubscribe> findByUsernameLimited(@Param("username") String username,
+                                              @Param("position") int position, @Param("size") int size);
+
     @Insert("insert star_subscribe (username, starname, starId, updated) values " +
             "(#{username}, #{starName}, #{starId}, #{updated})")
     int insert(StarSubscribe subscribe);

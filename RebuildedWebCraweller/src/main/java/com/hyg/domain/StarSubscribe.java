@@ -7,8 +7,8 @@ public class StarSubscribe {
     private int id;
     private String username;
     private String starName;
-    private int starId;
-    private int updated;//为0未更新，为1表示已更新
+    private int starId;     //在获取页内容里为size
+    private int updated;    //为0未更新，为1表示已更新，在获取页内容里为position
 
     public StarSubscribe() {
     }

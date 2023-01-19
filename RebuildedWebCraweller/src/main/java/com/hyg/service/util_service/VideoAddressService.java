@@ -1,10 +1,7 @@
 package com.hyg.service.util_service;
 
 import com.alibaba.fastjson.JSON;
-import com.hyg.domain.DesktopPageContent;
-import com.hyg.domain.UserCollections;
-import com.hyg.domain.UserHistory;
-import com.hyg.domain.VideoInformation;
+import com.hyg.domain.*;
 import com.hyg.domain.transfer.PageContentInfo;
 import com.hyg.service.dao_related.quoted.StarSubscribeService;
 import com.hyg.service.filework.GetAllFileService;
@@ -114,6 +111,79 @@ public class VideoAddressService {
                 starSubscribeService.updateSubscribeStatus(star);
             }
         }
+    }
+
+    /**
+     * 对由star参演的作品进行按时间排序
+     * @param starname
+     * @return
+     */
+    public List<VideoInformation> starWorkSortByDate(String starname){
+        List<VideoInformation> videos = this.getStarWork(starname);
+
+        videos.sort((o1, o2) -> {
+            try {
+                if (o1.getDate() == null || o2.getDate() == null) {
+                    return 1;
+                }
+
+                Date date1 = o1.getDate();
+                Date date2 = o2.getDate();
+
+                if (date1.getTime() < date2.getTime())
+                    return -1;
+                else if (date1.getTime() > date2.getTime())
+                    return 1;
+                else
+                    return 0;
+            } catch (NullPointerException e) {
+                System.out.println("空指针异常");
+            }
+
+            return 0;
+        });
+
+        return videos;
+    }
+
+    /**
+     * 生成组成动态的视频信息
+     * @param username 用户名
+     * @return 大小不超过20的动态视频列表
+     */
+    public List<VideoInformation> recent(String username){
+        List<String> subscribes = this.starSubscribeService.getAllSubscribe(username);
+        Set<VideoInformation> set = new HashSet<>();
+
+        for (String star : subscribes) {
+            List<VideoInformation> works = this.getStarWork(star);
+            set.addAll(works);
+        }
+
+        List<VideoInformation> result = new ArrayList<>(set);
+        result.sort((o1, o2) -> {
+            try {
+                if (o1.getDate() == null || o2.getDate() == null) {
+                    return 1;
+                }
+
+                Date date1 = o1.getDate();
+                Date date2 = o2.getDate();
+
+                if (date1.getTime() < date2.getTime())
+                    return -1;
+                else if (date1.getTime() > date2.getTime())
+                    return 1;
+                else
+                    return 0;
+            } catch (NullPointerException e) {
+                System.out.println("空指针异常");
+            }
+
+            return 0;
+        });
+
+        return result;
     }
 
     /**
@@ -444,7 +514,7 @@ public class VideoAddressService {
     }
 
     /**
-     * 获取所有star参演的作品
+     * 获取所有由star参演的作品
      * @param starName
      * @return
      */

@@ -3,6 +3,7 @@ package com.hyg.service.dao_related.quoted;
 import com.hyg.dao.StarSubscribeDao;
 import com.hyg.domain.Star;
 import com.hyg.domain.StarSubscribe;
+import com.hyg.domain.VideoInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,7 @@ public class StarSubscribeService {
      * 获取某用户所有的订阅信息
      * 其中已更新的star将会被放在列表的前面
      * @param username
-     * @return
+     * @return 由starname组成的列表
      */
     public List<String> getAllSubscribe(String username){
         List<StarSubscribe> stars = this.findByUsername(username);
@@ -97,6 +98,21 @@ public class StarSubscribeService {
         result.addAll(notUpdated);
 
         return result;
+    }
+
+    /**
+     * 获取订阅列表的最大页数
+     * @param username
+     * @param size
+     * @return
+     */
+    public int maxPage(String username, int size){
+        int items = this.getAllSubscribe(username).size();
+
+        if (items % size == 0)
+            return items / size;
+
+        return items / size + 1;
     }
 
     /**
@@ -135,6 +151,26 @@ public class StarSubscribeService {
         }
 
         return false;
+    }
+
+    public List<Boolean> checkInList(List<String> stars, String username){
+        List<Boolean> returnValue = new ArrayList<>();
+
+        for (String star : stars) {
+            List<StarSubscribe> subscribers = this.findByStarName(star);
+            boolean result = false;
+
+            for (StarSubscribe subscriber : subscribers) {
+                if (subscriber.getUsername().equals(username)) {
+                    result = true;
+                    break;
+                }
+            }
+
+            returnValue.add(result);
+        }
+
+        return returnValue;
     }
 
     /**
@@ -210,12 +246,10 @@ public class StarSubscribeService {
 
         for (StarSubscribe subscribe : subscribes)
             this.update(subscribe.getId(), 1);//更新状态，0表示未更新，1表示已更新
-
-        return;
     }
 
     /**
-     * 重置user订阅的star的更新状态
+     * 重置某user订阅的star的更新状态
      * @param username
      * @param starName
      */
@@ -227,6 +261,25 @@ public class StarSubscribeService {
                 this.update(subscribe.getId(), 0);//更新状态，0表示未更新，1表示已更新
             }
         }
+    }
+
+    /**
+     * 重置某用户订阅的所有star的状态
+     * @param username
+     */
+    public void resetAllUpdateStatus(String username){
+        List<StarSubscribe> subscribes = this.findByUsername(username);
+
+        for (StarSubscribe subscribe : subscribes) {
+            if (subscribe.getUpdated() == 0)
+                continue;
+
+            this.update(subscribe.getId(), 0);
+        }
+    }
+
+    public List<StarSubscribe> getSubscribePage(String username, int size, int position){
+        return this.starSubscribeDao.findByUsernameLimited(username, position, size);
     }
 
     /**
