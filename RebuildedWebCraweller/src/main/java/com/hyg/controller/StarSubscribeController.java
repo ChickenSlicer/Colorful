@@ -94,12 +94,19 @@ public class StarSubscribeController {
     public String getUpdatedStars(@RequestBody String info){
         Account account = JSON.parseObject(info, Account.class);
 
-        return JSON.toJSONString(starSubscribeService.getUpdatedSubscribes(account.getName()));
+        return JSON.toJSONString(videoAddressService.updatedStarInfoList(account.getName()));
     }
 
     @RequestMapping("/resetUpdatedStar")
     public void resetUpdatedStar(@RequestBody String info){
         StarSubscribe subscribe = JSON.parseObject(info, StarSubscribe.class);
+
+        if (subscribe.getStarName() == null || subscribe.getUsername() == null)
+            return;
+
+        if (subscribe.getStarName().equals("") || subscribe.getUsername().equals(""))
+            return;
+
         starSubscribeService.resetUpdateStatus(subscribe.getUsername(), subscribe.getStarName());
     }
 
@@ -116,6 +123,13 @@ public class StarSubscribeController {
     @RequestMapping("/resetAll")
     public void resetAll(@RequestBody String info){
         StarSubscribe subscribe = JSON.parseObject(info, StarSubscribe.class);
+
+        if (subscribe.getUsername() == null)
+            return;
+
+        if (subscribe.getUsername().equals(""))
+            return;
+
         starSubscribeService.resetAllUpdateStatus(subscribe.getUsername());
     }
 
@@ -128,6 +142,6 @@ public class StarSubscribeController {
     public String recent(@RequestBody String info){
         StarSubscribe subscribe = JSON.parseObject(info, StarSubscribe.class);
 
-        return JSON.toJSONString(videoAddressService.recent(subscribe.getStarName()));
+        return JSON.toJSONString(videoAddressService.recent(subscribe.getUsername()));
     }
 }

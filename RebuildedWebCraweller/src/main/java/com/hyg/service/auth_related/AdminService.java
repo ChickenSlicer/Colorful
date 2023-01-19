@@ -45,6 +45,8 @@ public class AdminService {
     private StarSubscribeService starSubscribeService;
     @Autowired
     private ScheduledFanhaoService scheduledFanhaoService;
+    @Autowired
+    private ChatRecordService chatRecordService;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -203,6 +205,7 @@ public class AdminService {
         flag = flag && notRecommendService.deleteUser(name);
         flag = flag && starClickService.deleteUser(name);
         flag = flag && starSubscribeService.deleteByUser(name);
+        flag = flag && chatRecordService.deleteUserMessage(name);
 
         return flag && accountService.delete(name);
     }

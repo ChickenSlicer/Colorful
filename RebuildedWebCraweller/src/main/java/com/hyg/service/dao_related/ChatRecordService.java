@@ -86,4 +86,19 @@ public class ChatRecordService {
 
         return false;
     }
+
+    /**
+     * 删除某用户的所有历史记录
+     * @param username
+     * @return
+     */
+    public boolean deleteUserMessage(String username){
+        List<ChatRecord> userRecords = this.findByUser(username);
+        boolean success = true;
+
+        for (ChatRecord userRecord : userRecords)
+            success = success && this.delete(userRecord.getId());
+
+        return success;
+    }
 }

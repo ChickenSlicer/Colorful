@@ -3,7 +3,6 @@ package com.hyg.service.dao_related.quoted;
 import com.hyg.dao.StarSubscribeDao;
 import com.hyg.domain.Star;
 import com.hyg.domain.StarSubscribe;
-import com.hyg.domain.VideoInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -258,7 +257,8 @@ public class StarSubscribeService {
 
         for (StarSubscribe subscribe : subscribes){
             if (subscribe.getUsername().equals(username)){
-                this.update(subscribe.getId(), 0);//更新状态，0表示未更新，1表示已更新
+                if (subscribe.getUpdated() == 1)
+                    this.update(subscribe.getId(), 0);//更新状态，0表示未更新，1表示已更新
             }
         }
     }

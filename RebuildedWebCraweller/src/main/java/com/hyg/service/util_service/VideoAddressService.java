@@ -114,6 +114,55 @@ public class VideoAddressService {
     }
 
     /**
+     * 在更新通知界面所用的信息
+     * @param username
+     * @return
+     */
+    public List<SubscribedStarUpdateInfo> updatedStarInfoList(String username){
+        List<String> stars = this.starSubscribeService.getUpdatedSubscribes(username);
+        List<SubscribedStarUpdateInfo> result = new ArrayList<>();
+
+        for (String star : stars) {
+            SubscribedStarUpdateInfo info = new SubscribedStarUpdateInfo();
+            info.setStarname(star);
+            VideoInformation video = this.starWorkSortByDate(star).get(0);
+            info.setLatestMessage(video.getShortedVideoName());
+            info.setDate(video.getLastModified());
+            result.add(info);
+        }
+
+        Collections.sort(result, new Comparator<SubscribedStarUpdateInfo>() {
+            @Override
+            public int compare(SubscribedStarUpdateInfo o1, SubscribedStarUpdateInfo o2) {
+                String str1 = o1.getDate().toLowerCase();
+                String str2 = o2.getDate().toLowerCase();
+
+                for (int i = 0; i < str1.length(); i++) {
+                    try{
+                        char c1 = str1.charAt(i);
+                        char c2 = str2.charAt(i);
+
+                        if (c1 == c2)
+                            continue;
+
+                        if (c1 > c2)
+                            return 1;
+                        else
+                            return -1;
+                    }
+                    catch (Exception e){
+                        return 1;
+                    }
+                }
+
+                return -1;
+            }
+        });
+
+        return result;
+    }
+
+    /**
      * 对由star参演的作品进行按时间排序
      * @param starname
      * @return
@@ -142,6 +191,8 @@ public class VideoAddressService {
 
             return 0;
         });
+
+        Collections.reverse(videos);
 
         return videos;
     }
@@ -182,6 +233,11 @@ public class VideoAddressService {
 
             return 0;
         });
+
+        Collections.reverse(result);
+
+        if (result.size() > 20)
+            return result.subList(0, 20);
 
         return result;
     }
