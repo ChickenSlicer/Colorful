@@ -126,11 +126,13 @@ public class AdminController {
 
     @RequestMapping("/openScheduleService")
     public void openScheduleService(){
+        System.out.println("admin启动了定时更新磁力服务");
         adminService.openScheduledFanhaoService();
     }
 
     @RequestMapping("/closeScheduleService")
     public void closeScheduleService(){
+        System.out.println("admin关闭了定时更新磁力服务");
         adminService.closeScheduledFanhaoService();
     }
 
@@ -139,6 +141,11 @@ public class AdminController {
         AdjustSizeOrPosition adjustInfo = JSON.parseObject(info, AdjustSizeOrPosition.class);
 
         return adminService.setScheduledServiceSize(adjustInfo.getSize());
+    }
+
+    @RequestMapping("/getScheduledServiceStatus")
+    public boolean getScheduledServiceStatus(){
+        return adminService.getScheduledFanhaoStatus();
     }
 
     @RequestMapping("/setScheduledServicePosition")

@@ -7,8 +7,9 @@ import com.hyg.service.dao_related.quoted.StarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class GetVideoStarNameService {
@@ -17,13 +18,13 @@ public class GetVideoStarNameService {
     @Autowired
     StarService starService;
 
-    public List<String> getStarName(String fanhao){
+    public Set<String> getStarName(String fanhao){
         List<Movie> movieByFH = movieService.findMovieByFH(fanhao);
 
-        if (movieByFH.isEmpty())
-            return new ArrayList<>();
+        if (movieByFH.size() == 0)
+            return new HashSet<>();
 
-        List<String> result = new ArrayList<>();
+        Set<String> result = new HashSet<>();
 
         for (Movie movie : movieByFH) {
             if (!movie.getFanHao().equals(fanhao))

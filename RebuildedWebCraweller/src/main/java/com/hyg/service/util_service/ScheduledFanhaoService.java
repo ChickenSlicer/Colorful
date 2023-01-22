@@ -45,6 +45,7 @@ public class ScheduledFanhaoService {
         if (position >= size)
             return false;
 
+        System.out.println("admin更改定时更新磁力服务起始位置为: " + position);
         this.position = position;
         return true;
     }
@@ -57,6 +58,7 @@ public class ScheduledFanhaoService {
         if (eachTurnSize > 50)
             return false;
 
+        System.out.println("admin更改定时更新磁力服务批次大小为: " + eachTurnSize);
         this.eachTurnSize = eachTurnSize;
         return true;
     }

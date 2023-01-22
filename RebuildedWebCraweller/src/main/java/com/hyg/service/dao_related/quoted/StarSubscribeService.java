@@ -49,6 +49,9 @@ public class StarSubscribeService {
      * @return false表示starName对应的star有多个，true表示插入成功
      */
     public boolean addSubscribe(String username, String starName){
+        if (username.equals("未登录"))
+            return false;
+
         List<StarSubscribe> subscribers = this.findByStarName(starName);
 
         for (StarSubscribe subscriber : subscribers) {
@@ -78,6 +81,9 @@ public class StarSubscribeService {
      * @return 由starname组成的列表
      */
     public List<String> getAllSubscribe(String username){
+        if (username.equals("未登录"))
+            return new ArrayList<>();
+
         List<StarSubscribe> stars = this.findByUsername(username);
         List<String> result = new ArrayList<>();
         List<String> notUpdated = new ArrayList<>();
@@ -121,6 +127,9 @@ public class StarSubscribeService {
      * @return
      */
     public boolean deleteStarSubscribe(String username, String starName){
+        if (username.equals("未登录"))
+            return false;
+
         List<StarSubscribe> stars = this.findByUsername(username);
         StarSubscribe result = null;
 
@@ -142,6 +151,9 @@ public class StarSubscribeService {
      * @return
      */
     public boolean check(String username, String starName){
+        if (username.equals("未登录"))
+            return false;
+
         List<StarSubscribe> users = this.findByStarName(starName);
 
         for (StarSubscribe user : users) {
@@ -154,6 +166,9 @@ public class StarSubscribeService {
 
     public List<Boolean> checkInList(List<String> stars, String username){
         List<Boolean> returnValue = new ArrayList<>();
+
+        if (username.equals("未登录"))
+            return returnValue;
 
         for (String star : stars) {
             List<StarSubscribe> subscribers = this.findByStarName(star);
@@ -255,6 +270,9 @@ public class StarSubscribeService {
     public void resetUpdateStatus(String username, String starName){
         List<StarSubscribe> subscribes = this.findByStarName(starName);
 
+        if (username.equals("未登录"))
+            return;
+
         for (StarSubscribe subscribe : subscribes){
             if (subscribe.getUsername().equals(username)){
                 if (subscribe.getUpdated() == 1)
@@ -269,6 +287,9 @@ public class StarSubscribeService {
      */
     public void resetAllUpdateStatus(String username){
         List<StarSubscribe> subscribes = this.findByUsername(username);
+
+        if (username.equals("未登录"))
+            return;
 
         for (StarSubscribe subscribe : subscribes) {
             if (subscribe.getUpdated() == 0)
@@ -288,6 +309,9 @@ public class StarSubscribeService {
      * @return
      */
     public List<String> getUpdatedSubscribes(String username){
+        if (username.equals("未登录"))
+            return new ArrayList<>();
+
         List<StarSubscribe> subscribes = this.findByUsername(username);
         List<String> stars = new ArrayList<>();
 

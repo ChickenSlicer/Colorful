@@ -306,8 +306,14 @@ public class VideoAddressService {
     public void prepareRedis(){
         Set keyNum = redisTemplate.keys("*");
 
-        if (keyNum.size() == videoSortByName.size() || keyNum.size() == videoSortByName.size() + 1)
-            return;
+        if (redisTemplate.hasKey("AdminTodo")){
+            if (keyNum.size() == videoSortByName.size() + 1)
+                return;
+        }
+        else {
+            if (keyNum.size() == videoSortByName.size())
+                return;
+        }
 
         Set<File> allFile = new HashSet<>();
 
@@ -328,7 +334,7 @@ public class VideoAddressService {
         }
 
         for (String s : fileNameWithMP4) {
-            List<String> stars = getVideoStarNameService.getStarName(s);
+            List<String> stars = new ArrayList<>(getVideoStarNameService.getStarName(s));
             redisTemplate.opsForValue().set(s, JSON.toJSONString(stars), 24, TimeUnit.HOURS);
         }
 
