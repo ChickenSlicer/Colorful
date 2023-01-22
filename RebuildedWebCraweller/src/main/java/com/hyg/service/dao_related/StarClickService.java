@@ -149,7 +149,7 @@ public class StarClickService {
     }
 
     /**
-     * 删除用户的所有信息
+     * 删除该用户的所有信息，该方法仅为admin用户所使用
      * @return
      */
     public boolean deleteUser(String username){

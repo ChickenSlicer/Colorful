@@ -121,7 +121,13 @@ public class AdminService {
             startService.sleep();
         }
 
-        return this.videoClickService.deleteFanhao(fanhao);
+        boolean delSuccess = this.videoClickService.deleteFanhao(fanhao);
+        delSuccess = delSuccess && this.userCollectionsService.deleteByFanhao(fanhao);
+        delSuccess = delSuccess && this.historyService.deleteByFanhao(fanhao);
+        delSuccess = delSuccess && this.commentService.deleteByFanhao(fanhao);
+        delSuccess = delSuccess && this.notRecommendService.deleteByFanhao(fanhao);
+
+        return delSuccess;
     }
 
     /**

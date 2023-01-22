@@ -98,7 +98,7 @@ public class HistoryService {
     }
 
     /**
-     * 删除某用户的所有历史记录
+     * 删除某用户的所有历史记录，该方法仅为admin用户所使用
      * 只需要name属性的内容
      * @return
      */
@@ -144,5 +144,22 @@ public class HistoryService {
             return all.size() / pageSize + 1;
 
         return all.size() / pageSize;
+    }
+
+    /**
+     * 按照fanhao删除，此方法仅为admin账号使用
+     * @param fanhao
+     * @return
+     */
+    public boolean deleteByFanhao(String fanhao){
+        List<UserHistory> all = this.findAll();
+        boolean flag = true;
+
+        for (UserHistory history : all) {
+            if (history.getFanhao().equals(fanhao))
+                flag = flag && this.delete(history.getUsername(), history.getFanhao(), history.getTime());
+        }
+
+        return flag;
     }
 }

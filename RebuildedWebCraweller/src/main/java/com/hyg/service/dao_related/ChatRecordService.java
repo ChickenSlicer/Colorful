@@ -88,7 +88,7 @@ public class ChatRecordService {
     }
 
     /**
-     * 删除某用户的所有历史记录
+     * 删除某用户的所有历史记录，该方法仅为admin用户所使用
      * @param username
      * @return
      */

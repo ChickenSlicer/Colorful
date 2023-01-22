@@ -52,6 +52,23 @@ public class UserCollectionsService {
     }
 
     /**
+     * 按fanhao删除所有用户收藏内容，此方法仅为admin使用
+     * @param fanhao
+     * @return
+     */
+    public boolean deleteByFanhao(String fanhao){
+        List<UserCollections> collections = this.findAll();
+        boolean delSuccess = true;
+
+        for (UserCollections collection : collections) {
+            if (collection.getFanhao().equals(fanhao))
+                delSuccess = delSuccess && this.delete(collection.getAccountId(), collection.getFanhao());
+        }
+
+        return delSuccess;
+    }
+
+    /**
      * 按页获取收藏
      * 这里返回的是视频列表
      * @param username
@@ -136,7 +153,7 @@ public class UserCollectionsService {
     }
 
     /**
-     * 删除所有的用户收藏
+     * 删除该用户的所有收藏，该方法仅为admin用户所使用
      * @param username
      * @return
      */

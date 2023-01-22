@@ -143,7 +143,7 @@ public class VideoClickService {
     }
 
     /**
-     * 删除用户所有的点击信息
+     * 删除该用户所有的点击信息，该方法仅为admin用户所使用
      * @return
      */
     public boolean deleteUser(String username){
@@ -160,7 +160,7 @@ public class VideoClickService {
     }
 
     /**
-     * 删除某一fanhao的点击记录
+     * 删除某一fanhao的点击记录，该方法仅为admin用户所使用
      * @param fanhao
      * @return
      */

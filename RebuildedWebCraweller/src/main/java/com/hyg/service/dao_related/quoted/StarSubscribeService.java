@@ -188,7 +188,7 @@ public class StarSubscribeService {
     }
 
     /**
-     * 删除用户的所有订阅信息
+     * 删除该用户的所有订阅信息，该方法仅为admin用户所使用
      * @param username
      * @return
      */
@@ -237,6 +237,15 @@ public class StarSubscribeService {
         }
 
         return result;
+    }
+
+    /**
+     * 检查用户名对应的用户是否有订阅star的更新
+     * @param username 用户名
+     * @return true有更新，否则false
+     */
+    public boolean checkUpdateInfo(String username){
+        return this.getUpdatedSubscribes(username).size() != 0;
     }
 
     /**

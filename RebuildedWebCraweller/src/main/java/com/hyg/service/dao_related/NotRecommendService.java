@@ -80,7 +80,7 @@ public class NotRecommendService {
     }
 
     /**
-     * 删除用户的所有记录
+     * 删除用户的所有记录，该方法仅为admin用户所使用
      * @param username
      * @return
      */
@@ -114,5 +114,22 @@ public class NotRecommendService {
         }
 
         System.out.println("清空not_recommend完毕! ");
+    }
+
+    /**
+     * 按照fanhao删除，该方法仅为admin用户所使用
+     * @param fanhao
+     * @return
+     */
+    public boolean deleteByFanhao(String fanhao){
+        List<NotRecommend> all = this.findAll();
+        boolean flag = true;
+
+        for (NotRecommend info : all) {
+            if (info.getFanhao().equals(fanhao))
+                flag = flag && this.delete(info.getId());
+        }
+
+        return flag;
     }
 }

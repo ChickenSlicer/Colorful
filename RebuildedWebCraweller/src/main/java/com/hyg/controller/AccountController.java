@@ -3,6 +3,7 @@ package com.hyg.controller;
 import com.hyg.domain.transfer.DeleteCollectionsUnit;
 import com.hyg.service.auth_related.unquoted.RegisterService;
 import com.hyg.service.dao_related.AccountService;
+import com.hyg.service.dao_related.quoted.StarSubscribeService;
 import com.hyg.service.dao_related.quoted.UserCollectionsService;
 import com.alibaba.fastjson.JSON;
 import com.hyg.domain.Account;
@@ -27,6 +28,20 @@ public class AccountController {
     private AccountService accountService;
     @Autowired
     private UserCollectionsService userCollectionsService;
+    @Autowired
+    private StarSubscribeService starSubscribeService;
+
+    /**
+     * 检查该用户是否有订阅star的更新
+     * @param info
+     * @return
+     */
+    @RequestMapping("/subscribeUpdated")
+    public boolean subscribeUpdated(@RequestBody String info){
+        Account user = JSON.parseObject(info, Account.class);
+
+        return starSubscribeService.checkUpdateInfo(user.getName());
+    }
 
     /**
      * 用户登录

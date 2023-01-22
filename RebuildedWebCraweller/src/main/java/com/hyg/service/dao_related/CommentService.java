@@ -83,7 +83,7 @@ public class CommentService {
     }
 
     /**
-     * 删除用户所有的评论
+     * 删除该用户所有的评论，该方法仅为admin用户所使用
      * @param username
      * @return
      */
@@ -93,6 +93,21 @@ public class CommentService {
 
         if (comments.size() == 0)
             return true;
+
+        for (Comment comment : comments)
+            flag = flag && this.delete(comment.getFanhao(), comment.getUsername(), comment.getTime());
+
+        return flag;
+    }
+
+    /**
+     * 按fanhao删除评论，该方法仅为admin用户所使用
+     * @param fanhao
+     * @return
+     */
+    public boolean deleteByFanhao(String fanhao){
+        List<Comment> comments = this.findByFanhao(fanhao);
+        boolean flag = true;
 
         for (Comment comment : comments)
             flag = flag && this.delete(comment.getFanhao(), comment.getUsername(), comment.getTime());

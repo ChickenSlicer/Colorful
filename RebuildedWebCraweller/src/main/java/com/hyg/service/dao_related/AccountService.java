@@ -62,6 +62,11 @@ public class AccountService {
         return accountDao.update(password, username) == 1;
     }
 
+    /**
+     * 删除某个账号，该方法仅为admin用户所使用
+     * @param username
+     * @return
+     */
     public boolean delete(String username){
         return this.accountDao.delete(username) == 1;
     }

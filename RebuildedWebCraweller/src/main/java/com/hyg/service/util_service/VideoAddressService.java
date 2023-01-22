@@ -334,6 +334,9 @@ public class VideoAddressService {
         }
 
         for (String s : fileNameWithMP4) {
+            if (redisTemplate.hasKey(s))
+                continue;
+
             List<String> stars = new ArrayList<>(getVideoStarNameService.getStarName(s));
             redisTemplate.opsForValue().set(s, JSON.toJSONString(stars), 24, TimeUnit.HOURS);
         }
